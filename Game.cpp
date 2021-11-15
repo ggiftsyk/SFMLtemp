@@ -208,7 +208,8 @@ void Game::update()
 				this->window.close();
 				cout << "Enter" << endl;
 			}
-		}		
+		}	
+		//
 
 		/*
 		while (this->window.pollEvent(this->ev))
