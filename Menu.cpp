@@ -22,7 +22,7 @@ Menu::Menu(View& view)
 	menu[1].setFont(font);
 	menu[1].setCharacterSize(40);
 	menu[1].setFillColor(Color::Color(44, 52, 107));
-	menu[1].setString("Leaderboard");
+	menu[1].setString("High Score");
 	menu[1].setOrigin(menu[1].getLocalBounds().width / 2, menu[1].getLocalBounds().height / 4);
 	menu[1].setPosition(Vector2f((view.getSize().x * 3 / 2) - offset_x, (view.getSize().y * 4 / 7) + offset_y));
 

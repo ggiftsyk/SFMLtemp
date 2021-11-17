@@ -12,6 +12,7 @@
 #include "Enemy.h"
 #include "Heart.h"
 #include "Menu.h"
+#include "ScoreList.h"
 
 #include <iostream>
 #include <sstream>
@@ -21,6 +22,8 @@
 #define GAME_MENU 0
 #define GAME_PLAY 1
 #define GAME_OVER 2
+#define GAME_WIN 3
+#define HIGH_SCORE 4
 
 
 using namespace sf;
@@ -29,9 +32,11 @@ using namespace std;
 class Game
 {
 private:
+	string name = "";
+
 	//Variables
 	RenderWindow window;
-	Event ev;
+	//Event ev;
 	Menu *menu;
 	View view;
 
@@ -47,8 +52,8 @@ private:
 	Player *player;
 
 	//PlayerGUI
-	RectangleShape playerHpBar;
-	RectangleShape playerHpBarBack;
+	/*RectangleShape playerHpBar;
+	RectangleShape playerHpBarBack;*/
 
 	Coin *coin;
 
@@ -74,17 +79,32 @@ private:
 
 	int Hp;
 
-	// bool isGameOver;
+	//bool isGameOver;
 	Font font;
 	Text guiTex;
 	
 	//Gameover
 	Sprite Gameover;
 	Texture gameOverTex;
+
+	Text gameOvertex;
+
+	int TextEntered;
+
+	//Gamewin
+	Sprite Gamewin;
+	Texture gameWinTex;
+
+	//High score
+	Sprite Highscore;
+	Texture HighscoreTex;
+
+	//Scorelist
+	ScoreList* score_list;
 	
 
 public:
-	Game();
+	Game(ScoreList* score_list);
 	virtual ~Game();
 
 	//Functions
@@ -93,6 +113,12 @@ public:
 
 	//Gameover
 	void initGameover();
+
+	//Gamewin
+	void initGamewin();
+
+	//HIGHSOCRE
+	void initHighscore();
 
 	void updatePlayer();
 	void updateCollision();

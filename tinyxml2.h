@@ -1,26 +1,3 @@
-/*
-Original code by Lee Thomason (www.grinninglizard.com)
-
-This software is provided 'as-is', without any express or implied
-warranty. In no event will the authors be held liable for any
-damages arising from the use of this software.
-
-Permission is granted to anyone to use this software for any
-purpose, including commercial applications, and to alter it and
-redistribute it freely, subject to the following restrictions:
-
-1. The origin of this software must not be misrepresented; you must
-not claim that you wrote the original software. If you use this
-software in a product, an acknowledgment in the product documentation
-would be appreciated but is not required.
-
-2. Altered source versions must be plainly marked as such, and
-must not be misrepresented as being the original software.
-
-3. This notice may not be removed or altered from any source
-distribution.
-*/
-
 #ifndef TINYXML2_INCLUDED
 #define TINYXML2_INCLUDED
 
@@ -41,17 +18,6 @@ distribution.
 #   include <cstring>
 #endif
 #include <stdint.h>
-
-/*
-   TODO: intern strings instead of allocation.
-*/
-/*
-	gcc:
-        g++ -Wall -DTINYXML2_DEBUG tinyxml2.cpp xmltest.cpp -o gccxmltest.exe
-
-    Formatting, Artistic Style:
-        AStyle.exe --style=1tbs --indent-switches --break-closing-brackets --indent-preprocessor tinyxml2.cpp tinyxml2.h
-*/
 
 #if defined( _DEBUG ) || defined (__DEBUG__)
 #   ifndef TINYXML2_DEBUG
@@ -107,11 +73,6 @@ static const int TIXML2_PATCH_VERSION = 0;
 #define TINYXML2_MINOR_VERSION 0
 #define TINYXML2_PATCH_VERSION 0
 
-// A fixed element depth limit is problematic. There needs to be a
-// limit to avoid a stack overflow. However, that limit varies per
-// system, and the capacity of the stack. On the other hand, it's a trivial
-// attack that can result from ill, malicious, or even correctly formed XML,
-// so there needs to be a limit in place.
 static const int TINYXML2_MAX_ELEMENT_DEPTH = 100;
 
 namespace tinyxml2
@@ -424,17 +385,6 @@ public:
         return _nUntracked;
     }
 
-	// This number is perf sensitive. 4k seems like a good tradeoff on my machine.
-	// The test file is large, 170k.
-	// Release:		VS2010 gcc(no opt)
-	//		1k:		4000
-	//		2k:		4000
-	//		4k:		3900	21000
-	//		16k:	5200
-	//		32k:	4300
-	//		64k:	4000	21000
-    // Declared public because some compilers do not accept to use ITEMS_PER_BLOCK
-    // in private part if ITEMS_PER_BLOCK is private
     enum { ITEMS_PER_BLOCK = (4 * 1024) / ITEM_SIZE };
 
 private:
@@ -457,27 +407,6 @@ private:
     int _nUntracked;
 };
 
-
-
-/**
-	Implements the interface to the "Visitor pattern" (see the Accept() method.)
-	If you call the Accept() method, it requires being passed a XMLVisitor
-	class to handle callbacks. For nodes that contain other nodes (Document, Element)
-	you will get called with a VisitEnter/VisitExit pair. Nodes that are always leafs
-	are simply called with Visit().
-
-	If you return 'true' from a Visit method, recursive parsing will continue. If you return
-	false, <b>no children of this node or its siblings</b> will be visited.
-
-	All flavors of Visit methods have a default implementation that returns 'true' (continue
-	visiting). You need to only override methods that are interesting to you.
-
-	Generally Accept() is called on the XMLDocument, although all nodes support visiting.
-
-	You should never change the document from a callback.
-
-	@sa XMLNode::Accept()
-*/
 class TINYXML2_LIB XMLVisitor
 {
 public:
@@ -633,11 +562,7 @@ public:
     static bool ToDouble( const char* str, double* value );
 	static bool ToInt64(const char* str, int64_t* value);
     static bool ToUnsigned64(const char* str, uint64_t* value);
-	// Changes what is serialized for a boolean value.
-	// Default to "true" and "false". Shouldn't be changed
-	// unless you have a special testing or compatibility need.
-	// Be careful: static, global, & not thread safe.
-	// Be sure to set static const memory as parameters.
+
 	static void SetBoolSerialization(const char* writeTrue, const char* writeFalse);
 
 private:
@@ -645,32 +570,6 @@ private:
 	static const char* writeBoolFalse;
 };
 
-
-/** XMLNode is a base class for every object that is in the
-	XML Document Object Model (DOM), except XMLAttributes.
-	Nodes have siblings, a parent, and children which can
-	be navigated. A node is always in a XMLDocument.
-	The type of a XMLNode can be queried, and it can
-	be cast to its more defined type.
-
-	A XMLDocument allocates memory for all its Nodes.
-	When the XMLDocument gets deleted, all its Nodes
-	will also be deleted.
-
-	@verbatim
-	A Document can contain:	Element	(container or leaf)
-							Comment (leaf)
-							Unknown (leaf)
-							Declaration( leaf )
-
-	An Element can contain:	Element (container or leaf)
-							Text	(leaf)
-							Attributes (not on tree)
-							Comment (leaf)
-							Unknown (leaf)
-
-	@endverbatim
-*/
 class TINYXML2_LIB XMLNode
 {
     friend class XMLDocument;
@@ -732,15 +631,6 @@ public:
         return 0;
     }
 
-    /** The meaning of 'value' changes for the specific type.
-    	@verbatim
-    	Document:	empty (NULL is returned, not an empty string)
-    	Element:	name of the element
-    	Comment:	the comment text
-    	Unknown:	the tag contents
-    	Text:		the text string
-    	@endverbatim
-    */
     const char* Value() const;
 
     /** Set the Value of an XML node.
@@ -833,34 +723,14 @@ public:
         return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->NextSiblingElement( name ) );
     }
 
-    /**
-    	Add a child node as the last (right) child.
-		If the child node is already part of the document,
-		it is moved from its old location to the new location.
-		Returns the addThis argument or 0 if the node does not
-		belong to the same document.
-    */
     XMLNode* InsertEndChild( XMLNode* addThis );
 
     XMLNode* LinkEndChild( XMLNode* addThis )	{
         return InsertEndChild( addThis );
     }
-    /**
-    	Add a child node as the first (left) child.
-		If the child node is already part of the document,
-		it is moved from its old location to the new location.
-		Returns the addThis argument or 0 if the node does not
-		belong to the same document.
-    */
+
     XMLNode* InsertFirstChild( XMLNode* addThis );
-    /**
-    	Add a node after the specified child node.
-		If the child node is already part of the document,
-		it is moved from its old location to the new location.
-		Returns the addThis argument or 0 if the afterThis node
-		is not a child of this node, or if the node does not
-		belong to the same document.
-    */
+   
     XMLNode* InsertAfterChild( XMLNode* afterThis, XMLNode* addThis );
 
     /**
@@ -873,30 +743,9 @@ public:
     */
     void DeleteChild( XMLNode* node );
 
-    /**
-    	Make a copy of this node, but not its children.
-    	You may pass in a Document pointer that will be
-    	the owner of the new Node. If the 'document' is
-    	null, then the node returned will be allocated
-    	from the current Document. (this->GetDocument())
-
-    	Note: if called on a XMLDocument, this will return null.
-    */
     virtual XMLNode* ShallowClone( XMLDocument* document ) const = 0;
 
-	/**
-		Make a copy of this node and all its children.
-
-		If the 'target' is null, then the nodes will
-		be allocated in the current document. If 'target'
-        is specified, the memory will be allocated is the
-        specified XMLDocument.
-
-		NOTE: This is probably not the correct tool to
-		copy a document, since XMLDocuments can have multiple
-		top level XMLNodes. You probably want to use
-        XMLDocument::DeepCopy()
-	*/
+	
 	XMLNode* DeepClone( XMLDocument* target ) const;
 
     /**

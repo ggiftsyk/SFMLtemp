@@ -21,6 +21,8 @@ private:
 	Texture Cointex2;
 
 	Texture healtex;
+
+	Texture winTex;
 	
 	Player player;
 
@@ -28,12 +30,16 @@ public:
 	Coin();
 	virtual ~Coin();
 
-	vector<sf::Sprite>  diamond{ 4 };
+	vector<sf::Sprite> diamond;
 
-	vector<sf::Sprite>  heal{ 3 };
+	vector<sf::Sprite> heal;
+
+	void resetCoin();
+
+	Sprite win;
 
 	//void update();
-	vector<sf::Sprite>  coins{ 400 };//MAX_COIN
+	vector<sf::Sprite>  coins;//MAX_COIN
 	void render(sf::RenderWindow& window);
 	//const RenderWindow& getWindow() const;
 };
