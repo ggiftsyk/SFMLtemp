@@ -5,7 +5,7 @@ Menu::Menu(View& view)
 {	
 	//view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
 
-	if(!backgroundTex.loadFromFile("Bgmenu2.png")){}
+	if(!backgroundTex.loadFromFile("Bgmenu3.png")){}
 	background.setTexture(backgroundTex);
 	background.setPosition(view.getSize().x / 2, view.getSize().y / 2);
 
@@ -13,21 +13,21 @@ Menu::Menu(View& view)
 	float offset_x = 1440 / 2;
 	float offset_y = 720 / 2;
 	menu[0].setFont(font);
-	menu[0].setCharacterSize(60);
+	menu[0].setCharacterSize(42);
 	menu[0].setFillColor(Color::Magenta);
 	menu[0].setString("Play");
 	menu[0].setOrigin(menu[0].getLocalBounds().width / 2, menu[0].getLocalBounds().height / 4);
 	menu[0].setPosition(Vector2f((view.getSize().x * 3 / 2) - offset_x, (view.getSize().y * 3 / 7) + offset_y)); 
 
 	menu[1].setFont(font);
-	menu[1].setCharacterSize(40);
+	menu[1].setCharacterSize(33);
 	menu[1].setFillColor(Color::Color(44, 52, 107));
-	menu[1].setString("High Score");
+	menu[1].setString("Score");
 	menu[1].setOrigin(menu[1].getLocalBounds().width / 2, menu[1].getLocalBounds().height / 4);
 	menu[1].setPosition(Vector2f((view.getSize().x * 3 / 2) - offset_x, (view.getSize().y * 4 / 7) + offset_y));
 
 	menu[2].setFont(font);
-	menu[2].setCharacterSize(40);
+	menu[2].setCharacterSize(33);
 	menu[2].setFillColor(Color::Color(44, 52, 107));
 	menu[2].setString("Exist");
 	menu[2].setOrigin(menu[2].getLocalBounds().width / 2, menu[2].getLocalBounds().height / 4);
@@ -47,7 +47,6 @@ void Menu::draw(RenderWindow& window, sf::View& view)
 
 	for (int i = 0; i < MAX_ITEM; i++)
 	{
-		//menu[i].setOrigin(menu[i].getLocalBounds().width / 2, menu[i].getLocalBounds().height * (i + 3) / 7.5);
 		menu[i].setOrigin(menu[i].getLocalBounds().width / 2, menu[i].getLocalBounds().height * (i + 3) / 7);
 		window.draw(menu[i]);
 	}
@@ -58,10 +57,10 @@ void Menu::MoveUp()
 	if (selectedItem - 1 >= 0)
 	{
 		menu[selectedItem].setFillColor(Color::Color(44, 52, 107));
-		//menu[selectedItem].setCharacterSize(36);
+		menu[selectedItem].setCharacterSize(33);
 		selectedItem--;
 		menu[selectedItem].setFillColor(Color::Magenta);
-		//menu[selectedItem].setCharacterSize(60);
+		menu[selectedItem].setCharacterSize(42);
 	}
 }
 
@@ -70,10 +69,10 @@ void Menu::MoveDown()
 	if (selectedItem +1 < MAX_ITEM)
 	{
 		menu[selectedItem].setFillColor(Color::Color(44, 52, 107));
-		//menu[selectedItem].setCharacterSize(36);
+		menu[selectedItem].setCharacterSize(33);
 		selectedItem++;
 		menu[selectedItem].setFillColor(Color::Magenta);
-		//menu[selectedItem].setCharacterSize(60);
+		menu[selectedItem].setCharacterSize(42);
 	}
 }
 

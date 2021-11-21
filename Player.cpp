@@ -35,11 +35,8 @@ void Player::initSprite()
 	this->currentFrame = IntRect(0, 0, 68, 68); //sq of player 136
 
 	this->sprite.setTextureRect(this->currentFrame);
-	this->sprite.setScale(0.6f, 0.6f); //size player
-	//cout << this->sprite.getGlobalBounds().width << endl;
-	//cout << this->sprite.getGlobalBounds().height << endl;
-	//this->sprite.setOrigin(this->sprite.getGlobalBounds().width/0.4, sprite.getGlobalBounds().height);
-	this->sprite.setOrigin(this->sprite.getGlobalBounds().width/2, sprite.getGlobalBounds().height+20);
+	this->sprite.setScale(0.55f, 0.55f); //size player
+	this->sprite.setOrigin(this->sprite.getGlobalBounds().width/2, sprite.getGlobalBounds().height+22);
 
 }
 void Player::initAnimations()
@@ -255,8 +252,8 @@ void Player::updateAnimations()
 			this->sprite.setTextureRect(this->currentFrame);
 			
 		}
-		this->sprite.setScale(0.6f, 0.6f); //Size
-		this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().height + 20);
+		this->sprite.setScale(0.55f, 0.55f); //Size
+		this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().height + 22);
 	}
 	else if (this->animState == PLAYER_ANIMATION_STATES::MOVING_LEFT)
 	{
@@ -272,9 +269,9 @@ void Player::updateAnimations()
 		
 		}
 		
-		this->sprite.setScale(-0.6f, 0.6f); //size player
+		this->sprite.setScale(-0.55f, 0.55f); //size player
 		//this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 0.5f, sprite.getGlobalBounds().width); //width / Size hello
-		this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().height + 20);
+		this->sprite.setOrigin(this->sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().height + 22);
 	}
 	else
 		this->animationTimer.restart();

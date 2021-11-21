@@ -20,10 +20,11 @@
 #include <ctime>
 
 #define GAME_MENU 0
-#define GAME_PLAY 1
-#define GAME_OVER 2
-#define GAME_WIN 3
-#define HIGH_SCORE 4
+#define INPUT_NAME 1
+#define GAME_PLAY 2
+#define GAME_OVER 3
+#define GAME_WIN 4
+#define HIGH_SCORE 5
 
 
 using namespace sf;
@@ -102,13 +103,6 @@ private:
 	//Scorelist
 	ScoreList* score_list;
 	
-
-public:
-	Game(ScoreList* score_list);
-	virtual ~Game();
-
-	//Functions
-	void updateEvent();
 	void updateDt();
 
 	//Gameover
@@ -119,6 +113,19 @@ public:
 
 	//HIGHSOCRE
 	void initHighscore();
+
+	//Enter name
+	void initInputname();
+
+	Sprite InputName;
+	Texture inputnameTex;
+
+public:
+	Game(ScoreList* score_list);
+	virtual ~Game();
+
+	//Functions
+	void updateEvent();
 
 	void updatePlayer();
 	void updateCollision();

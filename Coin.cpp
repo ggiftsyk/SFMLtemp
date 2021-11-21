@@ -5,11 +5,11 @@ void Coin::initCoin()
 	this->Cointex.loadFromFile("Coin.png");
 	this->Cointex2.loadFromFile("Diamond.png");
 	this->healtex.loadFromFile("heal.png");
-	this->winTex.loadFromFile("Win.png");
+	this->finishTex.loadFromFile("finish.png");
 
 	//Game Win
-	this->win.setTexture(winTex);
-	this->win.setPosition(1300.f, 145.f);
+	this->finish.setTexture(finishTex);
+	this->finish.setPosition(1300.f, 130.f);
 
 	bool checkTiled[80][40];
 	this->resetCoin();
@@ -21,34 +21,34 @@ void Coin::resetCoin() {
 	Sprite diamond_sprite;
 	//Diamond
 	diamond_sprite.setTexture(Cointex2);
-	diamond_sprite.setPosition(940.f, 100.f);
+	diamond_sprite.setPosition(940.f, 110.f);
 	diamond.push_back(diamond_sprite);
 
 	diamond_sprite.setTexture(Cointex2);
-	diamond_sprite.setPosition(1100.f, 250.f);
+	diamond_sprite.setPosition(1100.f, 265.f);
 	diamond.push_back(diamond_sprite);
 
 	diamond_sprite.setTexture(Cointex2);
-	diamond_sprite.setPosition(420.f, 325.f);
+	diamond_sprite.setPosition(420.f, 345.f);
 	diamond.push_back(diamond_sprite);
 
 	diamond_sprite.setTexture(Cointex2);
-	diamond_sprite.setPosition(350.f, 40.f);
+	diamond_sprite.setPosition(350.f, 70.f);
 	diamond.push_back(diamond_sprite);
 
 	heal.clear();
 	Sprite heal_sprite;
 	//Heal
 	heal_sprite.setTexture(healtex);
-	heal_sprite.setPosition(200.f, 315.f);
+	heal_sprite.setPosition(200.f, 320.f);
 	heal.push_back(heal_sprite);
 
 	heal_sprite.setTexture(healtex);
-	heal_sprite.setPosition(770.f, 120.f);
+	heal_sprite.setPosition(770.f, 125.f);
 	heal.push_back(heal_sprite);
 
 	heal_sprite.setTexture(healtex);
-	heal_sprite.setPosition(830.f, 370.f);
+	heal_sprite.setPosition(830.f, 365.f);
 	heal.push_back(heal_sprite);
 
 	coins.clear();
@@ -90,5 +90,5 @@ void Coin::render(sf::RenderWindow& window)
 		window.draw(i);
 	}
 
-	window.draw(win);
+	window.draw(finish);
 }

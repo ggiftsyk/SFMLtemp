@@ -11,9 +11,9 @@ void Enemy::initSprite()
 	bool checkTiled[80][40];
 	for (int i = 0; i < 8; i++)
 	{
-		enemies[i].setScale(Vector2f(1.f, 1.f));
+		enemies[i].setScale(Vector2f(0.8f, 0.8f));
 		enemies[i].setTexture(textureSheet);
-		enemies[i].setOrigin(enemies->getGlobalBounds().width/2, enemies->getGlobalBounds().height / 3);
+		enemies[i].setOrigin(enemies->getGlobalBounds().width/2, enemies->getGlobalBounds().height / 4);
 		RandDir[i] = (rand() % 2)? -1:1 ;
 	}
 		enemies[0].setPosition((rand() % 8 + 16 )* 18, 28 * 18);
@@ -21,8 +21,8 @@ void Enemy::initSprite()
 		enemies[2].setPosition((rand() % 9 + 69 )* 18, 26 * 18);
 		enemies[3].setPosition((rand() % 9 + 15 )* 18, 14 * 18);
 		enemies[4].setPosition((rand() % 6 + 53 )* 18, 17 * 18);
-		enemies[5].setPosition((rand() % 10 + 23)* 18, 5 * 18);
-		enemies[6].setPosition((rand() % 9 + 25) * 18, 22 * 18);
+		enemies[5].setPosition((rand() % 10 + 23)* 18, 6 * 18);
+		enemies[6].setPosition((rand() % 6 + 25) * 18, 22 * 18);
 		enemies[7].setPosition((rand() % 5 + 46) * 18, 9 * 18);
 	
 }

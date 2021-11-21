@@ -54,6 +54,7 @@ void Game::renderHeart()
 
 Game::Game(ScoreList* score_list)
 {	
+	game_state = 0;
 	this->view.setSize(1440, 720);
 	this->menu = new Menu(view);
 	//Hp
@@ -62,6 +63,7 @@ Game::Game(ScoreList* score_list)
 	this->initGameover();
 	this->initGamewin();
 	this->initHighscore();
+	this->initInputname();
 
 	this->initWindow();
 
@@ -183,23 +185,30 @@ void Game::updateCollision()
 
 void Game::initGameover()
 {
-	this->gameOverTex.loadFromFile("Gameover.png");
+	this->gameOverTex.loadFromFile("over.png");
 	this->Gameover.setTexture(gameOverTex);
 	this->Gameover.setPosition(0, 0);
 }
 
 void Game::initGamewin()
 {
-	this->gameWinTex.loadFromFile("Gamewin.png");
+	this->gameWinTex.loadFromFile("Win.png");
 	this->Gamewin.setTexture(gameWinTex);
 	this->Gamewin.setPosition(0, 0);
 }
-
 void Game::initHighscore()
 {
-	this->HighscoreTex.loadFromFile("test.png");
+	this->HighscoreTex.loadFromFile("score.png");
 	this->Highscore.setTexture(HighscoreTex);
 	this->Highscore.setPosition(1440.f/2.f, 720.f/2.f);
+	//this->Highscore.setPosition();
+}
+
+void Game::initInputname()
+{
+	this->inputnameTex.loadFromFile("inputname.png");
+	this->InputName.setTexture(inputnameTex);
+	this->InputName.setPosition(1440.f / 2.f, 720.f / 2.f);
 	//this->Highscore.setPosition();
 }
 
@@ -216,6 +225,10 @@ void Game::update()
 		{
 			this->menu->Event(window, event);
 			if (event.type == Event::Closed) this->window.close();
+			if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
+			{
+				this->window.close();
+			}
 			if (event.type == Event::TextEntered) {
 				
 				if(event.text.unicode == 13) //13=Enter
@@ -223,7 +236,7 @@ void Game::update()
 					int selected_item = this->menu->getSelectedItem();
 					if (selected_item == 0)
 					{
-						this->game_state = GAME_PLAY;
+						this->game_state = INPUT_NAME;
 						cout << "Enter" << endl;
 					}
 					if (selected_item == 1)
@@ -238,39 +251,38 @@ void Game::update()
 					}
 				}	
 			}
-		}		
-		//
-
-		/*
-		while (this->window.pollEvent(this->ev))
+		}	
+	}
+	if (this->game_state == INPUT_NAME)
+	{
+		Event event;
+		while (this->window.pollEvent(event))
 		{
-			if (this->ev.type == Event::Closed)
-				this->window.close();
-			else if (this->ev.type == Event::KeyPressed && this->ev.key.code == Keyboard::Escape)
-				this->window.close();
-
-			if (this->ev.type == Event::KeyReleased &&
-				(
-					this->ev.key.code == Keyboard::A ||
-					this->ev.key.code == Keyboard::D ||
-					this->ev.key.code == Keyboard::W ||
-					this->ev.key.code == Keyboard::S
-					)
-				)
+			if (event.type == Event::Closed) this->window.close();
+			if (event.type == Event::TextEntered)
 			{
-				this->player->resetAnimationTimer();
-			}
-			if (this->ev.type == Event::KeyPressed && this->ev.key.code == Keyboard::Enter)
-			{
-				int selected_item = this->menu->getSelectedItem();
-				if (selected_item == 0)
+				cout << event.text.unicode << endl;
+				if (event.text.unicode == 8)
+				{
+					if (name.size() > 0)
+						name.erase(name.end() - 1);
+				}
+				if (event.text.unicode == 13) //Enter
 				{
 					this->game_state = GAME_PLAY;
-					cout << "Enter" << endl;
+				}
+				if ((event.text.unicode >= 'A' and event.text.unicode <= 'Z') or (event.text.unicode >= 'a' and event.text.unicode <= 'z'))
+				{
+					if (name.size() < 10)
+						name+=char(event.text.unicode);
 				}
 			}
+			if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
+			{
+				this->game_state = GAME_MENU;
+			}
+		
 		}
-		*/
 	}
 	if(this->game_state == GAME_PLAY) 
 	{
@@ -282,15 +294,19 @@ void Game::update()
 
 		if (Hp <= 0)
 		{
+			sleep(seconds(0.4f));
 			this->game_state = GAME_OVER;
 
 			// Reset
 			Hp = 4;
 		}
 		// Win
-		else if (player->getGlobalBounds().intersects(this->coin->win.getGlobalBounds()))
+		else if (player->getGlobalBounds().intersects(this->coin->finish.getGlobalBounds()))
 		{
+			sleep(seconds(0.6f));
 			this->game_state = GAME_WIN;
+			// Reset
+			Hp = 4;
 		}
 
 		this->updatePlayer();
@@ -298,11 +314,24 @@ void Game::update()
 		this->enemy->update();
 		this->updateGui();
 
+		if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
+		{
+			this->game_state = GAME_MENU;
+		}
+
 	}
 
 	if (this->game_state == HIGH_SCORE)
 	{
-		
+		Event event;
+		while (this->window.pollEvent(event))
+		{
+			if (event.type == Event::Closed) this->window.close();
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
+		{
+			this->game_state = GAME_MENU;
+		}
 	}
 	if (this->game_state == GAME_OVER)
 	{	
@@ -310,44 +339,43 @@ void Game::update()
 		while (this->window.pollEvent(event))
 		{
 			if(event.type == Event::Closed) this->window.close();
-
-			if (event.type == Event::TextEntered)
+			if (event.text.unicode == 13)
 			{
-				cout << event.text.unicode << endl;
-				if (event.text.unicode == 8)
-				{
-					if (name.size() > 0)
-						name.erase(name.end() - 1);
-				}
-				if (event.text.unicode == 13) //Enter
-				{
-					score_list->addEntry(name, points);
-					name = "";
-					//Reset
-					coin->resetCoin();
-					this->player->setPosition(18.f, 18.f);
-					points = 0;
-				}
-				if ((event.text.unicode >= 'A' and event.text.unicode <= 'Z') or (event.text.unicode >= 'a' and event.text.unicode <= 'z'))
-				{
-					if(name.size()<10)
-						name.push_back(event.text.unicode);
-				}
+				//Reset
+				coin->resetCoin();
+				this->player->setPosition(18.f, 18.f);
+				score_list->addEntry(name, points);
+				cout << "GAME_OVER" << endl;
+				name = "";
+				points = 0;
+				this->game_state = GAME_MENU;
+				break;
 			}
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Key::Enter))
-		{
-			this->game_state = GAME_MENU;
-		}
+		
 	}
 	if (this->game_state == GAME_WIN)
 	{
-
-		if (Keyboard::isKeyPressed(Keyboard::Key::Enter))
+		Event event;
+		while (this->window.pollEvent(event))
 		{
-			this->game_state = GAME_MENU;
+			if (event.type == Event::Closed) this->window.close();
+			if (event.text.unicode == 13)
+			{
+				score_list->addEntry(name, points);
+				name = "";
+				cout << "GAME_WIN" << endl;
+				//Reset
+				coin->resetCoin();
+				this->player->setPosition(18.f, 18.f);
+				points = 0;
+				Hp = 4;
+				this->game_state = GAME_MENU;
+				break;
+			}
 		}
+
 	}
 
 }
@@ -359,6 +387,7 @@ void Game::run()
 		//this->updateDt();
 		this->update();
 		this->render();
+		//cout << " " << game_state << endl;
 	}
 }
 
@@ -388,6 +417,20 @@ void Game::render()
 	this->window.clear();
 
 	if(this->game_state == GAME_MENU) this->menu->draw(window, view);
+	if (this->game_state == INPUT_NAME)
+	{
+		this->window.draw(InputName);
+
+		Text text;
+		text.setFont(font);
+		text.setString(name + "_");
+		text.setFillColor(Color::White);
+		text.setOrigin(Vector2f(text.getGlobalBounds().width, text.getGlobalBounds().height) / 2.f);
+		text.setPosition(1400.f,700.f);
+		text.setCharacterSize(70);
+		cout<<name<<endl;
+		window.draw(text);
+	}
 	if (this->game_state == GAME_PLAY)
 	{
 
@@ -413,18 +456,22 @@ void Game::render()
 		this->window.draw(Highscore);
 		Text text;
 		text.setFont(font);
-		text.setFillColor(Color::Red);
+		text.setFillColor(Color::Blue);
+		text.setCharacterSize(33);
 		//Show name
+		int show_max_entry = 5;
 		for (int i = 0; i < this->score_list->get().size(); i++)
 		{
-			text.setPosition(700, 200 + (i * 40));
+			if (i >= show_max_entry) break;
+			text.setPosition(910, 600 + (i * 60));
 			text.setString(score_list->get().at(i).getName());
 			window.draw(text);
 		}
 		//Show score
 		for (int i = 0; i < this->score_list->get().size(); i++)
 		{
-			text.setPosition(900, 200 + (i * 40));
+			if (i >= show_max_entry) break;
+			text.setPosition(1100, 600 + (i * 60));
 			text.setString(to_string(score_list->get().at(i).getScore()));
 			window.draw(text);
 		}
@@ -432,17 +479,11 @@ void Game::render()
 	if (this->game_state == GAME_OVER)
 	{
 		this->window.draw(Gameover);
-		Text text;
-		text.setFont(font);
-		text.setFillColor(Color::White);
-		text.setPosition(150.f, 60.f);
-		text.setString(name + "_");
-		
-		window.draw(text);
 	}
 
 	if (this->game_state == GAME_WIN)
 	{
+		cout << "hahaha" << endl;
 		this->window.draw(Gamewin);
 	}
 	

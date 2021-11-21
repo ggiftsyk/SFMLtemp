@@ -22,7 +22,7 @@ private:
 
 	Texture healtex;
 
-	Texture winTex;
+	Texture finishTex;
 	
 	Player player;
 
@@ -36,7 +36,7 @@ public:
 
 	void resetCoin();
 
-	Sprite win;
+	Sprite finish;
 
 	//void update();
 	vector<sf::Sprite>  coins;//MAX_COIN
